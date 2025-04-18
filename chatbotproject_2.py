@@ -20,11 +20,8 @@ def get_response(user_input):
         "Why don’t the circus lions eat the clowns? 👉 'Because they taste funny!' \n\nHere, ‘taste funny’ has a double meaning. It can mean that something doesn’t taste good, but it also refers to the clown’s humorous personality. 🦁🤡"
     ]
 
-    # Handling greetings
-    if ("hello" in user_input or "hi" in user_input or "good morning" in user_input or "good evening" in user_input or "good afternoon" in user_input):
-        return "Good day! 😊 How can I help you today? You can ask me for current time, date, month, year, or even a calendar."
-    
-    elif "time" in user_input:
+    # Handling specific responses first
+    if "time" in user_input:
         return f"The time is ⏰ {now.strftime('%I:%M %p')}"
     
     elif "date" in user_input:
@@ -35,40 +32,48 @@ def get_response(user_input):
     
     elif "year" in user_input:
         return f"The year is {now.strftime('%Y')}"
-    
+
     elif "calendar" in user_input:
         try:
-            words = user_input.split()
+            words = user_input.lower().split()
             year = None
             month = None
+
             months_dict = {
                 "january": 1, "february": 2, "march": 3, "april": 4,
                 "may": 5, "june": 6, "july": 7, "august": 8,
                 "september": 9, "october": 10, "november": 11, "december": 12
             }
+
             for word in words:
-                if word.isdigit():
+                if word.isdigit() and len(word) == 4:
                     year = int(word)
                 elif word in months_dict:
                     month = months_dict[word]
+
             if year and month:
-                return calendar.month(year, month)
+                return f"📅 Here's the calendar for {calendar.month_name[month]} {year}:\n\n{calendar.month(year, month)}"
             elif year:
-                return calendar.calendar(year)
+                return f"📅 Here's the full calendar for {year}:\n\n{calendar.calendar(year)}"
             else:
-                return "Try asking like: 'calendar january 2025'"
+                return "❓ Please include both month and year, like: 'calendar may 2026'"
+
         except:
-            return "Couldn't understand the calendar request."
-    
+            return "⚠️ Sorry, I couldn't understand your calendar request. Try something like 'calendar december 2030'."
+
     elif "joke" in user_input:
         return random.choice(jokes)
-    
+
     elif "your name" in user_input:
         return "I am SmartBot 🤖"
-    
+
     elif "motivate" in user_input:
         return "You're doing great. Keep going! 💪"
-    
+
+    # Handle greetings last
+    elif any(greet in user_input for greet in ["hello", "hi", "good morning", "good evening", "good afternoon"]):
+        return "Good day! 😊 How can I help you today? You can ask me for current time, date, month, year, or even a calendar."
+
     else:
         return "Hmm, I didn't get that. Try asking about time, date, or calendar. 😊"
 
